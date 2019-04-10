@@ -7,6 +7,7 @@
 # Open source under the MIT license.  Source code at
 # <https://github.com/simple-dmrg/simple-dmrg/>
 
+## LS : This is a note created by LS while learning this code
 using Arpack
 using LinearAlgebra
 using SparseArrays
@@ -27,10 +28,10 @@ end
 # For these objects to be valid, the basis size must match the dimension of
 # each operator matrix.
 isvalid(block::Union{Block,EnlargedBlock}) =   
-    # LS ： whether objects in Block and EnlargedBlock satisfy the following condition
+    ## LS ： whether objects in Block and EnlargedBlock satisfy the following condition
     all(op -> size(op) == (block.basis_size, block.basis_size), values(block.operator_dict))
-    # LS : For op in values of block.operator (op should be a matrix)
-    #      whether the size of op equals to (block.basis_size, block.basis_size)
+    ## LS : For op in values of block.operator (op should be a matrix)
+    ##      whether the size of op equals to (block.basis_size, block.basis_size)
 
 
 # Model-specific code for the Heisenberg XXZ chain
