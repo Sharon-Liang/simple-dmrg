@@ -71,7 +71,7 @@ function enlarge_block(block::Block)
     # `kron` uses the tensor product convention making blocks of the second
     # array scaled by the first.  As such, we adopt this convention for
     # Kronecker products throughout the code.
-    I1 = sparse(1.0I, model_d, model_d)
+    I1 = sparse(1.0I, model_d, model_d)  ## LS : sparse(I,n,n) : Creates a n-by-n identity matrix.
     I_block = sparse(1.0I, mblock, mblock)
     enlarged_operator_dict = Dict{Symbol,AbstractMatrix{Float64}}(
         :H => kron(o[:H], I1) + kron(I_block, H1) + H2(o[:conn_Sz], o[:conn_Sp], Sz1, Sp1),
