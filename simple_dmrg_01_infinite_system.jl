@@ -16,7 +16,7 @@ using SparseArrays
 struct Block
     length::Int
     basis_size::Int
-    operator_dict::Dict{Symbol,AbstractMatrix{Float64}}
+    operator_dict::Dict{Symbol,AbstractMatrix{Float64}}  ## LS : why dict ?
 end
 
 struct EnlargedBlock
