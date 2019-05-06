@@ -62,6 +62,7 @@ initial_block = Block(1, model_d, Dict{Symbol,AbstractMatrix{Float64}}(
 ))
 
 function enlarge_block(block::Block)
+    ## LS : the input parameters are of the kind "Block"
     # This function enlarges the provided Block by a single site, returning an
     # EnlargedBlock.
     mblock = block.basis_size
@@ -72,12 +73,17 @@ function enlarge_block(block::Block)
     # `kron` uses the tensor product convention making blocks of the second
     # array scaled by the first.  As such, we adopt this convention for
     # Kronecker products throughout the code.
-    I1 = sparse(1.0I, model_d, model_d)  ## LS : sparse(I,n,n) : Creates a n-by-n identity matrix.
-    I_block = sparse(1.0I, mblock, mblock)
+    I1 = sparse(1.0I, model_d, model_d)
+        ## LS : sparse(I,n,n) : Creates a n-by-n identity matrix.
+        ## LS : Matrix{T}(I, n, n) : Creates a n-by-n identity matrix.
+        ## LS : whar's the difference of these two ?
+        ## LS : I_block = sparse(I,mblock,mblock)
     enlarged_operator_dict = Dict{Symbol,AbstractMatrix{Float64}}(
         :H => kron(o[:H], I1) + kron(I_block, H1) + H2(o[:conn_Sz], o[:conn_Sp], Sz1, Sp1),
+        ## LS : H_(A.) = H_A * I_2 + I_A * H1 + H_connect
         :conn_Sz => kron(I_block, Sz1),
         :conn_Sp => kron(I_block, Sp1),
+        ## LS : Sz and Sp on the edge of the block
     )
 
     return EnlargedBlock(block.length + 1,
@@ -94,7 +100,9 @@ end
 function single_dmrg_step(sys::Block, env::Block, m::Int)
     # Performs a single DMRG step using `sys` as the system and `env` as the
     # environment, keeping a maximum of `m` states in the new basis.
+    ## LS : A .. B : A. as system, .B as environment
 
+    ## LS : check dimension
     @assert isvalid(sys)
     @assert isvalid(env)
 
@@ -127,6 +135,7 @@ function single_dmrg_step(sys::Block, env::Block, m::Int)
     # Hermitian but won't be detected as such due to small roundoff error.)
     superblock_hamiltonian = (superblock_hamiltonian + superblock_hamiltonian') / 2
     (energy,), psi0 = eigs(superblock_hamiltonian, nev=1, which=:SR)
+    ## LS : what's the meaning of this expression?
 
     # Construct the reduced density matrix of the system by tracing out the
     # environment
@@ -136,6 +145,8 @@ function single_dmrg_step(sys::Block, env::Block, m::Int)
     # quickly in our Kronecker product structure, psi0 is thus row-major.
     # However, Julia stores matrices in column-major format, so we first
     # construct our matrix in (env, sys) form and then take the transpose.
+
+    ## LS : why aren't sys and env equal?
     psi0 = transpose(reshape(psi0, (env_enl.basis_size, sys_enl.basis_size)))
     rho = Hermitian(psi0 * psi0')
 
