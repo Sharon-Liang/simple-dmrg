@@ -13,6 +13,7 @@ using LinearAlgebra
 using SparseArrays
 
 # Data structures to represent the block and enlarged block objects.
+  ## LS : why define block ?
 struct Block
     length::Int
     basis_size::Int
@@ -27,7 +28,7 @@ end
 
 # For these objects to be valid, the basis size must match the dimension of
 # each operator matrix.
-isvalid(block::Union{Block,EnlargedBlock}) =   
+isvalid(block::Union{Block,EnlargedBlock}) =
     ## LS ： whether objects in Block and EnlargedBlock satisfy the following condition
     all(op -> size(op) == (block.basis_size, block.basis_size), values(block.operator_dict))
     ## LS : For op in values of block.operator (op should be a matrix)
